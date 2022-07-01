@@ -1,0 +1,106 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+	<header>
+		<div class="container-fluid">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="#">Luxeloc</a>
+
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+
+					<div class="collapse navbar-collapse" id="navbarNavDropdown">
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link active" aria-current="page" href="/">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{path('liste_vehicules')}}">Vehicules</a>
+							</li>
+
+							{# On verif si l'user est authentifié |-> On affiche DECONNECTION #}
+							{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_logout')}}">Déconnexion</a>
+								</li>
+							{% else %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_register')}}">Inscription</a>
+								</li>
+							{% endif %}
+
+
+							{# On verif si l'user est authentifié ET a le rôle d'Admin #}
+							{% if is_granted('IS_AUTHENTICATED_FULLY')and is_granted('ROLE_ADMIN') %}
+
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+										<li>
+											<a class="dropdown-item" href="{{ path('admin_ajout_vehicule') }}">Ajout d'un vehicule</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path('admin_app_vehicules') }}">Gestion des Vehicules</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="#">Something else here</a>
+										</li>
+									</ul>
+								</li>
+							{% endif %}
+
+						</ul>
+					</div>
+					{#  #}
+					<p class="text-right text-white">Bonjour Mon Gars</p>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<main
+		class="container mb-5">
+
+		{# pour Aff message connexion SUCCESS | vient de RegisterController $this->addFlash #}
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success text-center">
+				<p>{{ message }}</p>
+			</div>
+		{% endfor %}
+
+		{# SECURITE --->pour Aff message connexion ERROR | vient de VehiculeController $this->addFlash #}
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger text-center">
+				<p>{{ message }}</p>
+			</div>
+		{% endfor %}
+
+
+		{% block content %}
+			{# block qui reste vide ici. le contenu propre à chaque page s'inserera #}
+		{% endblock %}
+
+		{% block final_js %}
+			{# Block qui servira a ajouter du js a chaque page #}
+		{% endblock %}
+
+	</main>
+
+	<footer class="fixed-bottom bg-light">
+		<div class="text-center">
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_cgv') }}">- Nos CGV -</a>
+			</li>
+
+			<p>
+				&copy; All rights reserved, Ma-Pom Inc. et LuxeLoc
+			</p>
+		</div>
+	</footer>
+{% endblock %}
